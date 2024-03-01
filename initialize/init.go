@@ -47,6 +47,8 @@ func readConfig() {
 	if err = v.Unmarshal(&global.Config); err != nil {
 		panic(err)
 	}
-	fmt.Println("read config file:")
-	spew.Dump(global.Config)
+	if global.Config.Server.Mode == "local" {
+		fmt.Println("read config file:")
+		spew.Dump(global.Config)
+	}
 }

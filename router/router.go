@@ -2,6 +2,8 @@ package router
 
 import (
 	"github.com/axliupore/gin-template/global"
+	"github.com/axliupore/gin-template/middleware"
+	"github.com/axliupore/gin-template/model/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +21,20 @@ func Router() *gin.Engine {
 
 	if !global.Config.Server.UseOSS {
 		router.Static(global.Config.Server.FilePath, "."+global.Config.Server.FilePath)
+	}
+
+	router.Use(middleware.Cors())
+
+	publicGroup := router.Group(global.Config.Server.RouterPrefix)
+	{
+		// 健康监测
+		publicGroup.GET("/health", func(c *gin.Context) {
+			response.SuccessMessage(c, "ok")
+		})
+	}
+
+	{
+		InitUserRouter(publicGroup)
 	}
 
 	return router
